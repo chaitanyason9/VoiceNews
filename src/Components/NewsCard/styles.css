@@ -1,0 +1,30 @@
+.media{
+    height: 200px;
+}
+
+.card{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-bottom: 10px solid white;
+}
+
+.title{
+    padding: 0 1rem;
+}
+
+.details{
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem;
+}
+
+.bottom{
+    display: flex;
+    justify-content: space-between;
+}
+
+.active{
+    border-bottom: 7px solid rgb(17, 17, 122);
+}
