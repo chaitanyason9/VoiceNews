@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import alanBtn from "@alan-ai/alan-sdk-web";
+import Navbar from './Navbar.js'
+import NewsCards from './Components/NewsCards/NewsCards.js'
+import wordsToNumbers from 'words-to-numbers';
+const alanKey = AlanAI_KEY;
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+function App(){
+  const [newsArticles, setnewsArticles] = useState([]);
+  const [activeArticle, setactiveArticle] = useState(-1);
+  useEffect(() => {
+    alanBtn({
+      key: alanKey,
+      onCommand: ({ command, articles, number }) => {
+        if (command === 'newHeadlines') {
+          setnewsArticles(articles);
+          setactiveArticle(-1);
+        }else if(command === 'highlight'){
+          setactiveArticle((prevactiveArticle) => prevactiveArticle + 1);
+        }else if (command === 'open') {
+          const parsedNumber = number.length > 2 ? wordsToNumbers((number), { fuzzy: true }) : number;
+          const article = articles[parsedNumber - 1];
+
+          if (parsedNumber > articles.length) {
+            alanBtn().playText('Please try that again...');
+          } else if (article) {
+            window.open(article.url, '_blank');
+            alanBtn().playText('Opening...');
+          } else {
+            alanBtn().playText('Please try that again...');
+          }
+        }
+      },
+    });
+  }, []);
+  return(
+    <>
+      <Navbar/>
+      <NewsCards articles = { newsArticles } activeArticle = {activeArticle}/>
+    </>
+  )
 }
 
 export default App;
